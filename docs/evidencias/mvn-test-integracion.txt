@@ -1,0 +1,4 @@
+[INFO] Running cl.ucn.app.integration.TutoriasIntegrationTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.306 s -- in cl.ucn.app.integration.TutoriasIntegrationTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS

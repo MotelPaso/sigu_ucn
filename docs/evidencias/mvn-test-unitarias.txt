@@ -1,0 +1,16 @@
+[INFO] Running cl.ucn.app.service.TutoriaBusquedaServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.471 s -- in cl.ucn.app.service.TutoriaBusquedaServiceTest
+[INFO] Running cl.ucn.app.service.AgendaServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in cl.ucn.app.service.AgendaServiceTest
+[INFO] Running cl.ucn.app.service.TutorServiceTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.038 s -- in cl.ucn.app.service.TutorServiceTest
+[INFO] Running cl.ucn.app.service.RegistroServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s -- in cl.ucn.app.service.RegistroServiceTest
+[INFO] Running cl.ucn.app.service.AsignaturaServiceTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.031 s -- in cl.ucn.app.service.AsignaturaServiceTest
+[INFO] Running cl.ucn.app.service.TutoriaServicePublicarTest
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s -- in cl.ucn.app.service.TutoriaServicePublicarTest
+[INFO] Running cl.ucn.app.service.ReservaTutoriaServiceTest
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in cl.ucn.app.service.ReservaTutoriaServiceTest
+[INFO] Tests run: 57, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Entregable 2 - Grupo 8 - Sistema de gestión de tutorías académicas</title>
+<style>
+  @page { size: A4; margin: 22mm 20mm 22mm 20mm; }
+  body { font-family: "Helvetica Neue", Arial, sans-serif; font-size: 10.5pt; line-height: 1.45; color: #1d1d1f; }
+  h1 { font-size: 18pt; color: #1f3b73; margin: 0 0 6pt; }
+  h2 { font-size: 14pt; color: #1f3b73; border-bottom: 1.5pt solid #1f3b73; padding-bottom: 3pt; margin-top: 22pt; page-break-after: avoid; }
+  h3 { font-size: 11.5pt; color: #1f3b73; margin-top: 14pt; page-break-after: avoid; }
+  p { margin: 5pt 0; text-align: justify; }
+  ul, ol { margin: 4pt 0 6pt 0; padding-left: 18pt; }
+  li { margin: 2pt 0; }
+  table { border-collapse: collapse; width: 100%; margin: 8pt 0 10pt; font-size: 9pt; page-break-inside: auto; }
+  tr { page-break-inside: avoid; }
+  th { background: #1f3b73; color: #fff; text-align: left; padding: 4pt 5pt; }
+  td { border-bottom: 0.6pt solid #c9d1e3; padding: 3.5pt 5pt; vertical-align: top; }
+  code { font-family: Menlo, Consolas, monospace; font-size: 8.8pt; background: #f1f3f8; padding: 0 2pt; border-radius: 2pt; }
+  pre { font-family: Menlo, Consolas, monospace; font-size: 8.5pt; background: #f1f3f8; padding: 6pt 8pt; border-radius: 3pt; white-space: pre-wrap; }
+  figure { margin: 10pt 0 14pt; text-align: center; page-break-inside: avoid; }
+  figure img { max-width: 100%; width: auto; max-height: 225mm; border: 0.5pt solid #d5d9e2; }
+  figure.captura img { max-height: 105mm; }
+  figcaption { font-size: 9pt; color: #555; margin-top: 4pt; }
+  .portada { height: 245mm; display: flex; flex-direction: column; justify-content: center; text-align: center; page-break-after: always; }
+  .portada h1 { font-size: 24pt; margin-bottom: 8pt; }
+  .portada .sub { font-size: 14pt; color: #1f3b73; margin-bottom: 40pt; }
+  .portada table { width: 70%; margin: 0 auto; font-size: 10.5pt; }
+  .portada td { border: none; padding: 3pt 6pt; }
+  .portada td:first-child { font-weight: bold; text-align: right; width: 35%; color: #1f3b73; }
+  .salto { page-break-before: always; }
+  .indice ol { list-style: none; padding-left: 0; }
+  .indice li { margin: 3pt 0; }
+  .nota { background: #f6f8fc; border-left: 3pt solid #1f3b73; padding: 5pt 8pt; margin: 8pt 0; font-size: 9.5pt; }
+  .ok { color: #1a7f37; font-weight: bold; }
+  .pend { color: #b35900; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<section class="portada">
+  <h1>Entregable 2: Diseño detallado e implementación parcial</h1>
+  <div class="sub">Grupo 8 · Sistema de gestión de tutorías académicas</div>
+  <table>
+    <tr><td>Asignatura</td><td>Taller de Ingeniería de Software (Ingeniería de Software II, 2026)</td></tr>
+    <tr><td>Integrantes</td><td>Paulo Araya<br>Sebastián Bonilla<br>Martín Droguett<br>Damián Valdivia</td></tr>
+    <tr><td>Profesor</td><td>Daniel San Martín</td></tr>
+    <tr><td>Ayudante</td><td>Martín Castillo</td></tr>
+    <tr><td>Fecha</td><td>16 de noviembre de 2026</td></tr>
+    <tr><td>Repositorio</td><td>github.com/MotelPaso/sigu_ucn, rama <code>grupo-8</code></td></tr>
+  </table>
+</section>
+
+<section class="indice">
+  <h2>Contenido</h2>
+  <ol>
+    <li>1. Introducción</li>
+    <li>2. Versión corregida del Entregable 1</li>
+    <li>3. Modelo de datos y persistencia</li>
+    <li>4. Arquitectura del sistema</li>
+    <li>5. Diagramas de secuencia</li>
+    <li>6. Diagramas de actividad</li>
+    <li>7. Implementación parcial y validaciones</li>
+    <li>8. Pruebas</li>
+    <li>9. Evidencia de funcionamiento</li>
+    <li>10. Matriz de trazabilidad</li>
+    <li>11. Dificultades, decisiones y trabajo futuro</li>
+    <li>12. Conclusiones</li>
+    <li>Anexo A. Cómo ejecutar el módulo</li>
+  </ol>
+</section>
+
+<h2 class="salto">1. Introducción</h2>
+<p>Este documento corresponde al segundo entregable del Grupo 8 en el taller. Nuestro módulo es el sistema de gestión de tutorías académicas dentro de SIGU-UCN, la plataforma universitaria compartida por los nueve grupos.</p>
+<p>En el Entregable 1 definimos el problema, los requisitos y un primer modelado. En esta etapa corregimos ese documento, diseñamos el módulo en detalle y lo implementamos de forma parcial sobre la base común del curso: Java, Javalin, JTE, JPA/Hibernate y PostgreSQL en Docker. Quedaron operativas las ocho funcionalidades que el backlog del Entregable 1 asignó al E2. Asistencia y cancelaciones quedan para el Entregable 3.</p>
+
+<h2>2. Versión corregida del Entregable 1</h2>
+
+<h3>2.1 Cambios respecto a la versión anterior</h3>
+<p>Al revisar el Entregable 1 contra el enunciado y contra lo que construimos, encontramos inconsistencias y requisitos faltantes. La siguiente tabla resume las correcciones y el resto de la sección presenta la versión ya corregida.</p>
+<table>
+  <tr><th style="width:24%">Elemento</th><th>Problema detectado</th><th>Corrección</th></tr>
+  <tr><td>RF1 (registrar tutores)</td><td>Decía que el tutor se registra solo, pero los actores indicaban que lo habilita el administrador.</td><td>El administrador habilita a un estudiante existente como tutor y certifica al menos una asignatura.</td></tr>
+  <tr><td>RF2 y HU-02 (registro)</td><td>Suponía un registro institucional previo y no decía qué datos se piden.</td><td>El estudiante se registra con correo <code>@alumnos.ucn.cl</code>, nombre, carrera, semestre y una contraseña de al menos 8 caracteres.</td></tr>
+  <tr><td>HU-01 (iniciar sesión)</td><td>Pedía elegir rol al entrar. Como el tutor es un estudiante con un perfil adicional, no hay roles en conflicto.</td><td>Al iniciar sesión el sistema detecta si el usuario tiene perfil de tutor y muestra las opciones que corresponden.</td></tr>
+  <tr><td>RF5 (reservar)</td><td>Hablaba de la "capacidad de la sala", pero las tutorías en línea no tienen sala.</td><td>Se controla el cupo propio de cada tutoría, en ambas modalidades.</td></tr>
+  <tr><td>RF10 (buscar)</td><td>Mezclaba "filtrar" con "ordenar".</td><td>Se filtra por tutor, asignatura y fecha, y los resultados se muestran en orden cronológico.</td></tr>
+  <tr><td>Historial (enunciado, RF9)</td><td>El enunciado pide "listar historial" y el E1 no lo incluía.</td><td>Se agrega como RF11 y queda planificado para el E3.</td></tr>
+  <tr><td>Reglas del enunciado</td><td>Faltaban "una franja horaria solo puede reservarse una vez" y "solo pueden reservarse tutorías disponibles".</td><td>Se agregan como RN9 y RN10.</td></tr>
+  <tr><td>Caso de uso "Cancelar tutoría"</td><td>Decía que el sistema avisa a los inscritos, pero las notificaciones están fuera del alcance.</td><td>La cancelación y su motivo aparecen en la agenda de cada inscrito, sin mensajería.</td></tr>
+  <tr><td>Caso de uso "Registrar asistencia"</td><td>La precondición exigía que alguien hubiera asistido, lo que choca con la extensión 3a.</td><td>La precondición pasa a ser que la tutoría haya terminado.</td></tr>
+  <tr><td>Caso de uso "Gestionar asignaturas"</td><td>Solo impedía eliminar asignaturas con tutorías activas.</td><td>Tampoco se elimina una asignatura con tutorías en su historial, para no perder registros.</td></tr>
+  <tr><td>RN4</td><td>Decía "22 PM".</td><td>Horario permitido entre las 07:00 y las 22:00.</td></tr>
+</table>
+
+<h3>2.2 Descripción del problema</h3>
+<p>Las tutorías académicas son clases de ejercicios o repaso que dictan estudiantes de cursos superiores a estudiantes de niveles inferiores, y sirven de apoyo al aprendizaje. Hoy se organizan por canales informales, sin un registro común de oferta, cupos ni asistencia. El módulo reúne ese proceso en SIGU-UCN. Un tutor habilitado publica su disponibilidad, los estudiantes encuentran y reservan tutorías de las asignaturas que cursan, y ambos consultan su agenda.</p>
+
+<h3>2.3 Alcance</h3>
+<p>Incluye la gestión del catálogo de asignaturas, la habilitación de tutores, la publicación de tutorías, la búsqueda con filtros, la reserva, la agenda, la cancelación de tutorías e inscripciones, el registro de asistencia y el historial. El Entregable 2 implementa las ocho primeras funcionalidades del backlog (sección 2.9). Quedan fuera las notificaciones, la evaluación de tutores y los pagos. El módulo tampoco accede a información privada de los estudiantes.</p>
+
+<h3>2.4 Actores</h3>
+<ul>
+  <li><b>Estudiante:</b> estudiante de la universidad que busca y reserva tutorías.</li>
+  <li><b>Tutor:</b> estudiante habilitado por el administrador para dictar una o más asignaturas. Conserva todas las funciones de estudiante.</li>
+  <li><b>Administrador:</b> responsable académico. Gestiona el catálogo de asignaturas y habilita tutores.</li>
+</ul>
+
+<h3>2.5 Requisitos funcionales</h3>
+<table>
+  <tr><th style="width:8%">ID</th><th>Requisito</th><th style="width:10%">Entrega</th></tr>
+  <tr><td>RF1</td><td>El administrador puede habilitar a un estudiante registrado como tutor, certificando al menos una asignatura.</td><td>E2</td></tr>
+  <tr><td>RF2</td><td>Un estudiante puede registrarse con su correo institucional y una contraseña.</td><td>E2</td></tr>
+  <tr><td>RF3</td><td>Los usuarios inician sesión con sus credenciales y ven las opciones de su rol y perfil.</td><td>E2</td></tr>
+  <tr><td>RF4</td><td>Un tutor puede publicar una tutoría indicando asignatura, fecha, horario, modalidad, sala (si es presencial) y cupo.</td><td>E2</td></tr>
+  <tr><td>RF5</td><td>Un estudiante puede reservar una tutoría disponible, verificando que curse la asignatura, que haya cupo y que no tenga otra tutoría en ese horario.</td><td>E2</td></tr>
+  <tr><td>RF6</td><td>El tutor puede cancelar una tutoría que no ha comenzado, indicando el motivo.</td><td>E3</td></tr>
+  <tr><td>RF7</td><td>El estudiante puede cancelar su inscripción y registrar un motivo.</td><td>E3</td></tr>
+  <tr><td>RF8</td><td>Estudiantes y tutores pueden consultar su agenda ordenada por fecha y hora.</td><td>E2</td></tr>
+  <tr><td>RF9</td><td>El tutor puede registrar la asistencia de los inscritos una vez terminada la tutoría.</td><td>E3</td></tr>
+  <tr><td>RF10</td><td>El estudiante puede consultar las tutorías disponibles y filtrarlas por tutor, asignatura o fecha.</td><td>E2</td></tr>
+  <tr><td>RF11</td><td>Estudiantes y tutores pueden listar su historial de tutorías realizadas o canceladas.</td><td>E3</td></tr>
+  <tr><td>RF12</td><td>El administrador puede crear, editar y eliminar asignaturas, y asociarlas a tutores y tutorías.</td><td>E2</td></tr>
+</table>
+
+<h3>2.6 Requisitos no funcionales</h3>
+<ol>
+  <li><b>RNF1</b> Seguridad básica: toda ruta del módulo exige una sesión iniciada y cada acción verifica el rol o el perfil.</li>
+  <li><b>RNF2</b> Validación: el sistema valida todos los datos de entrada antes de procesarlos.</li>
+  <li><b>RNF3</b> Código limpio y mantenible.</li>
+  <li><b>RNF4</b> Organización en capas: presentación, servicio y persistencia.</li>
+  <li><b>RNF5</b> Persistencia estable en la base PostgreSQL compartida.</li>
+  <li><b>RNF6</b> Manejo controlado de errores: el usuario ve mensajes comprensibles y nunca detalles técnicos.</li>
+  <li><b>RNF7</b> Endpoints consistentes bajo el prefijo <code>/tutorias</code>.</li>
+  <li><b>RNF8</b> Trazabilidad entre requisitos, modelado, implementación y pruebas.</li>
+</ol>
+
+<h3>2.7 Reglas de negocio</h3>
+<ol>
+  <li><b>RN1</b> Los tutores también son estudiantes y pueden reservar tutorías de otros tutores.</li>
+  <li><b>RN2</b> Un estudiante solo reserva tutorías de asignaturas que cursa y no puede tener dos tutorías que se crucen en el horario.</li>
+  <li><b>RN3</b> La identificación válida es el correo institucional y una contraseña de al menos 8 caracteres.</li>
+  <li><b>RN4</b> Las tutorías ocurren entre las 07:00 y las 22:00.</li>
+  <li><b>RN5</b> Una tutoría dura al menos 30 minutos y se publica con al menos 3 horas de anticipación.</li>
+  <li><b>RN6</b> El tutor puede cancelar una tutoría antes de que comience y debe indicar el motivo.</li>
+  <li><b>RN7</b> La asistencia se registra una vez terminada la tutoría.</li>
+  <li><b>RN8</b> Un tutor solo publica tutorías de las asignaturas que tiene certificadas.</li>
+  <li><b>RN9</b> Una franja horaria de un tutor solo puede ocuparse una vez, así que no puede publicar dos tutorías que se crucen.</li>
+  <li><b>RN10</b> Solo se reservan tutorías disponibles, es decir, publicadas, futuras y con cupo.</li>
+</ol>
+
+<h3>2.8 Casos de uso e historias de usuario</h3>
+<figure><img src="../diagramas/img/casos-de-uso.svg" style="max-height:120mm"><figcaption>Figura 1. Diagrama de casos de uso (versión corregida).</figcaption></figure>
+<p>Los casos de uso del Entregable 1 se mantienen, con las correcciones de la sección 2.1. A continuación detallamos los dos que más cambiaron al implementarlos.</p>
+<p><b>Publicar tutoría</b> (actor: tutor; precondición: sesión iniciada y perfil de tutor certificado).</p>
+<ol>
+  <li>El tutor entra a "Publicar tutoría".</li>
+  <li>El sistema muestra solo las asignaturas que el tutor tiene certificadas.</li>
+  <li>El tutor indica asignatura, fecha, hora de inicio y término, modalidad, sala y cupo.</li>
+  <li>El sistema valida los datos y publica la tutoría con estado PUBLICADA.</li>
+</ol>
+<p>Extensiones: 4a, si hay datos inválidos, el sistema marca cada campo con su error y conserva lo ingresado. 4b, si la franja se cruza con otra tutoría del mismo tutor, rechaza la publicación.</p>
+<p><b>Registrar asistencia</b> (actor: tutor; precondición: la tutoría terminó). Se mantiene el flujo del E1, con la precondición corregida. Se implementará en el E3.</p>
+<p>Las historias HU-01 a HU-08 se mantienen. HU-01 cambia su segundo criterio: "dado un usuario con perfil de tutor, al iniciar sesión el sistema le muestra además la opción de publicar tutorías". HU-02 cambia el suyo: "dado un correo institucional no registrado, al registrarse se crea su cuenta con rol de estudiante".</p>
+
+<h3>2.9 Diagrama de clases y backlog</h3>
+<figure><img src="../diagramas/img/clases.svg" style="max-height:128mm"><figcaption>Figura 2. Diagrama de clases del dominio, ajustado a las entidades implementadas.</figcaption></figure>
+<p>Respecto al E1, el diagrama separa <code>Estudiante</code> de <code>Usuario</code>. El estudiante es el registro académico del módulo y puede estar asociado a una cuenta. El tutor es un perfil sobre un estudiante. Los estados y la modalidad se modelan como enumeraciones.</p>
+<table>
+  <tr><th>N°</th><th>Funcionalidad</th><th>Origen</th><th>Prioridad</th><th>Puntos</th><th>Entrega</th><th>Estado</th></tr>
+  <tr><td>1</td><td>Iniciar sesión</td><td>HU-01, RF3</td><td>Alta</td><td>3</td><td>E2</td><td class="ok">Hecho</td></tr>
+  <tr><td>2</td><td>Registrarse como estudiante</td><td>HU-02, RF2</td><td>Alta</td><td>3</td><td>E2</td><td class="ok">Hecho</td></tr>
+  <tr><td>3</td><td>Gestionar asignaturas</td><td>RF12</td><td>Alta</td><td>3</td><td>E2</td><td class="ok">Hecho</td></tr>
+  <tr><td>4</td><td>Registrar tutor</td><td>HU-08, RF1</td><td>Alta</td><td>3</td><td>E2</td><td class="ok">Hecho</td></tr>
+  <tr><td>5</td><td>Publicar tutoría</td><td>HU-05, RF4</td><td>Alta</td><td>5</td><td>E2</td><td class="ok">Hecho</td></tr>
+  <tr><td>6</td><td>Buscar tutorías disponibles</td><td>HU-03, RF10</td><td>Alta</td><td>3</td><td>E2</td><td class="ok">Hecho</td></tr>
+  <tr><td>7</td><td>Reservar tutoría</td><td>HU-04, RF5</td><td>Alta</td><td>8</td><td>E2</td><td class="ok">Hecho</td></tr>
+  <tr><td>8</td><td>Consultar agenda</td><td>RF8</td><td>Alta</td><td>2</td><td>E2</td><td class="ok">Hecho</td></tr>
+  <tr><td>9</td><td>Registrar asistencia</td><td>HU-06, RF9</td><td>Alta</td><td>5</td><td>E3</td><td class="pend">Pendiente</td></tr>
+  <tr><td>10</td><td>Cancelar tutoría</td><td>HU-07, RF6</td><td>Media</td><td>3</td><td>E3</td><td class="pend">Pendiente</td></tr>
+  <tr><td>11</td><td>Cancelar inscripción</td><td>RF7</td><td>Media</td><td>2</td><td>E3</td><td class="pend">Pendiente</td></tr>
+  <tr><td>12</td><td>Listar historial</td><td>RF11</td><td>Media</td><td>2</td><td>E3</td><td class="pend">Pendiente</td></tr>
+</table>
+
+<h2 class="salto">3. Modelo de datos y persistencia</h2>
+<p>El módulo agrega siete tablas con prefijo <code>tut_</code> mediante scripts aditivos en <code>db/init/</code>. No modifica las tablas base del sistema (<code>01_scheme.sql</code> y <code>02_seed.sql</code>), así evita conflictos con los otros grupos.</p>
+<ul>
+  <li><code>80_tutorias_schema.sql</code>: tablas, llaves, restricciones e índices.</li>
+  <li><code>81_tutorias_seed.sql</code>: datos de prueba (asignaturas, estudiantes, dos tutores y tutorías con fechas relativas al día de creación).</li>
+  <li><code>82_tutorias_constraints.sql</code>: índice único parcial que impide repetir la franja de un tutor.</li>
+</ul>
+<figure><img src="../diagramas/img/modelo-datos.svg" style="max-height:165mm"><figcaption>Figura 3. Modelo entidad-relación del módulo.</figcaption></figure>
+<table>
+  <tr><th style="width:24%">Tabla</th><th>Propósito</th><th style="width:38%">Restricciones relevantes</th></tr>
+  <tr><td><code>tut_asignaturas</code></td><td>Catálogo de asignaturas.</td><td><code>codigo</code> único; semestre entre 1 y 12.</td></tr>
+  <tr><td><code>tut_estudiantes</code></td><td>Registro académico del estudiante, enlazado opcionalmente a su cuenta en <code>usuarios</code>.</td><td><code>correo</code> y <code>usuario_id</code> únicos.</td></tr>
+  <tr><td><code>tut_estudiante_asignaturas</code></td><td>Asignaturas que cursa cada estudiante (RN2).</td><td>Llave primaria compuesta.</td></tr>
+  <tr><td><code>tut_tutores</code></td><td>Perfil de tutor sobre un estudiante.</td><td><code>estudiante_id</code> único: un perfil por estudiante.</td></tr>
+  <tr><td><code>tut_tutor_asignaturas</code></td><td>Asignaturas certificadas del tutor (RN8).</td><td>Llave primaria compuesta.</td></tr>
+  <tr><td><code>tut_tutorias</code></td><td>Tutorías publicadas.</td><td>CHECK de duración mínima, horario 07:00 a 22:00 dentro del mismo día, cupo mayor que 0, modalidad y estado válidos, y sala obligatoria si es presencial. Índice único parcial por tutor, inicio y fin para las publicadas (RN9).</td></tr>
+  <tr><td><code>tut_inscripciones</code></td><td>Reservas de estudiantes. Incluye <code>asistio</code> y <code>motivo_cancelacion</code> para el E3.</td><td>Índice único parcial <code>(tutoria_id, estudiante_id)</code> solo para reservas activas.</td></tr>
+</table>
+<h3>Decisiones del modelo</h3>
+<p>El plan inicial consideraba una tabla <code>asistencias</code> aparte. Como cada asistencia corresponde a una sola inscripción, la guardamos en la columna <code>asistio</code> de <code>tut_inscripciones</code>, que queda en <code>NULL</code> mientras no se registre la asistencia. Los índices únicos son parciales para que una tutoría cancelada no bloquee otra en la misma franja y una reserva cancelada no impida volver a reservar. Las reglas que dependen de varias filas (cupo, choque de horario, que el estudiante curse la asignatura) se validan en la capa de servicio dentro de una transacción.</p>
+<h3>Mapeo JPA</h3>
+<p>Cada tabla tiene su entidad en <code>cl.ucn.app.model</code> (<code>Asignatura</code>, <code>Estudiante</code>, <code>Tutor</code>, <code>Tutoria</code>, <code>InscripcionTutoria</code>), registrada en <code>persistence.xml</code>. Las relaciones usan <code>@ManyToOne</code>, <code>@OneToOne</code> y <code>@ManyToMany</code> con carga diferida, y los repositorios traen las asociaciones necesarias con <code>JOIN FETCH</code>.</p>
+
+<h2 class="salto">4. Arquitectura del sistema</h2>
+<p>El módulo sigue la arquitectura de tres capas del proyecto base. Una petición recorre ruta, controlador, servicio, repositorio y base de datos.</p>
+<figure><img src="../diagramas/img/arquitectura-capas.svg" style="max-height:118mm"><figcaption>Figura 4. Arquitectura por capas del módulo.</figcaption></figure>
+<ul>
+  <li><b>Presentación.</b> <code>TutoriaRoutes</code>, <code>TutoriaAdminRoutes</code> y <code>AuthRoutes</code> registran los endpoints. <code>AuthMiddleware</code> protege las rutas, de modo que sin sesión redirige a <code>/login</code> y sin el rol o perfil necesario responde 403. Los controladores leen la petición, delegan en un servicio y eligen la vista JTE. No contienen reglas de negocio.</li>
+  <li><b>Servicio.</b> Concentra las reglas de negocio. Cada servicio tiene una responsabilidad: <code>TutoriaService</code> publica, <code>ReservaTutoriaService</code> reserva, <code>TutoriaBusquedaService</code> filtra, <code>AgendaService</code> arma la agenda, <code>AsignaturaService</code> y <code>TutorService</code> atienden la administración y <code>RegistroService</code> el registro. Los errores de negocio se informan con <code>TutoriaValidacionException</code>, que puede llevar un mapa de errores por campo.</li>
+  <li><b>Persistencia.</b> Los servicios dependen de interfaces (<code>TutoriaRepository</code>, <code>TutorRepository</code>, <code>InscripcionTutoriaRepository</code> y otras), no de sus implementaciones JPA. Eso permite reemplazarlas por dobles en las pruebas unitarias.</li>
+</ul>
+<h3>Transacciones</h3>
+<p>Los repositorios del proyecto base abren y cierran un <code>EntityManager</code> por método. Eso no alcanza para reservar, porque validar el cupo, revisar choques e insertar la inscripción deben ocurrir en una misma transacción. Por eso agregamos la interfaz <code>Transaccion</code> y su implementación <code>JpaTransaccion</code>, que abre la transacción, ejecuta la operación, confirma o revierte ante cualquier excepción y siempre cierra el <code>EntityManager</code>. Dentro de ella, la reserva bloquea la fila de la tutoría (<code>SELECT ... FOR UPDATE</code>) y la publicación bloquea el perfil del tutor. Así dos peticiones simultáneas no pueden ocupar el último cupo ni la misma franja.</p>
+
+<h2 class="salto">5. Diagramas de secuencia</h2>
+<p>Los diagramas usan los nombres reales de clases, métodos y rutas. Las fuentes PlantUML están en <code>docs/diagramas/</code>.</p>
+<figure><img src="../diagramas/img/secuencia-publicar-tutoria.svg" style="max-height:92mm"><figcaption>Figura 5. Secuencia de "Publicar tutoría" (HU-05, RF4).</figcaption></figure>
+<p>Publicar tiene dos niveles de validación. Primero se revisa el formulario completo y se informan todos los errores a la vez, sin tocar la base de datos. Después, dentro de la transacción, se comprueba el perfil de tutor, la certificación de la asignatura y el cruce de franjas. Si el índice único de la base se dispara en una carrera, el servicio lo traduce al mismo mensaje de negocio.</p>
+<figure><img src="../diagramas/img/secuencia-reservar-tutoria.svg" style="max-height:92mm"><figcaption>Figura 6. Secuencia de "Reservar tutoría" (HU-04, RF5).</figcaption></figure>
+<p>Reservar es el flujo principal del módulo. Todas las comprobaciones y la inserción ocurren en una sola transacción con la tutoría bloqueada, de modo que una reserva rechazada no deja ninguna inscripción parcial.</p>
+
+<h2 class="salto">6. Diagramas de actividad</h2>
+<figure><img src="../diagramas/img/actividad-publicar-tutoria.svg" style="max-height:215mm"><figcaption>Figura 7. Actividad de "Publicar tutoría".</figcaption></figure>
+<figure><img src="../diagramas/img/actividad-reservar-tutoria.svg" style="max-height:215mm"><figcaption>Figura 8. Actividad de "Reservar tutoría".</figcaption></figure>
+
+<h2 class="salto">7. Implementación parcial y validaciones</h2>
+<h3>7.1 Endpoints del módulo</h3>
+<table>
+  <tr><th>Método y ruta</th><th>Acceso</th><th>Funcionalidad</th></tr>
+  <tr><td><code>GET/POST /login</code>, <code>GET /logout</code></td><td>Público</td><td>Iniciar y cerrar sesión; guarda rol y perfil de tutor en la sesión.</td></tr>
+  <tr><td><code>GET/POST /registro</code></td><td>Público</td><td>Registro de estudiantes.</td></tr>
+  <tr><td><code>GET /tutorias</code></td><td>Sesión</td><td>Listado de tutorías disponibles con filtros.</td></tr>
+  <tr><td><code>GET /tutorias/{id}</code></td><td>Sesión</td><td>Detalle de una tutoría, con cupos y estado.</td></tr>
+  <tr><td><code>POST /tutorias/{id}/reservar</code></td><td>Sesión</td><td>Reservar tutoría.</td></tr>
+  <tr><td><code>GET /tutorias/agenda</code></td><td>Sesión</td><td>Agenda del estudiante y, si es tutor, sus tutorías publicadas.</td></tr>
+  <tr><td><code>GET /tutorias/publicar</code>, <code>POST /tutorias</code></td><td>Tutor</td><td>Formulario y publicación de tutorías.</td></tr>
+  <tr><td><code>/tutorias/admin/asignaturas[...]</code></td><td>Administrador</td><td>Listar, crear, editar y eliminar asignaturas.</td></tr>
+  <tr><td><code>/tutorias/admin/tutores[...]</code></td><td>Administrador</td><td>Listar y registrar tutores con sus asignaturas certificadas.</td></tr>
+</table>
+
+<h3>7.2 Validaciones implementadas</h3>
+<table>
+  <tr><th style="width:22%">Funcionalidad</th><th>Validaciones</th></tr>
+  <tr><td>Registro</td><td>Nombre y carrera obligatorios; correo con formato <code>@alumnos.ucn.cl</code> y no registrado; contraseña de 8 caracteres o más y confirmación igual; semestre entre 1 y 12. Siempre asigna el rol ESTUDIANTE.</td></tr>
+  <tr><td>Asignaturas</td><td>Código, nombre y carrera obligatorios; código único (normalizado en mayúsculas); semestre entre 1 y 12; no se elimina si tiene tutorías activas o en su historial.</td></tr>
+  <tr><td>Registrar tutor</td><td>El correo debe pertenecer a un estudiante registrado con cuenta; no puede ser ya tutor; al menos una asignatura certificada y todas existentes.</td></tr>
+  <tr><td>Publicar</td><td>Campos obligatorios; horario entre 07:00 y 22:00; término posterior al inicio; duración mínima de 30 minutos; inicio futuro y con 3 horas de anticipación; cupo mayor que 0; sala obligatoria si es presencial; asignatura certificada; franja libre para el tutor.</td></tr>
+  <tr><td>Reservar</td><td>Tutoría existente, PUBLICADA y futura; no es la propia tutoría del tutor; sin reserva activa previa; el estudiante cursa la asignatura; quedan cupos; sin choque con otra reserva.</td></tr>
+</table>
+
+<h3>7.3 Manejo de errores</h3>
+<p>Las reglas de negocio lanzan <code>TutoriaValidacionException</code>. Los controladores la capturan y responden según el caso:</p>
+<ul>
+  <li>400, con el formulario y cada campo marcado, si hay errores de entrada.</li>
+  <li>403 si falta el perfil o el rol requerido.</li>
+  <li>404 si la tutoría no existe.</li>
+  <li>Un mensaje en la misma página cuando se rechaza una reserva.</li>
+</ul>
+<p>Los formularios conservan lo ingresado tras un error. En ninguno de los casos probados la interfaz muestra trazas de Java (sección 9).</p>
+
+<h2 class="salto">8. Pruebas</h2>
+<h3>8.1 Pruebas unitarias (JUnit 5 + Mockito)</h3>
+<p>Las pruebas unitarias aíslan los servicios de la base de datos. Unas usan Mockito y otras, dobles en memoria (<code>FakesTutorias</code>) que implementan las mismas interfaces de repositorio. Se ejecutan con <code>mvn test</code>.</p>
+<table>
+  <tr><th>Clase de prueba</th><th>Pruebas</th><th>Qué verifica</th></tr>
+  <tr><td><code>TutoriaServicePublicarTest</code></td><td>19</td><td>Horario 07:00 a 22:00 y sus bordes, duración mínima, 3 horas de anticipación, fecha pasada, asignatura no certificada, franja cruzada, sala y cupo, usuario sin perfil y traducción del índice único.</td></tr>
+  <tr><td><code>ReservaTutoriaServiceTest</code></td><td>13</td><td>Reserva exitosa, último cupo, sin cupo, asignatura no cursada, choque de horario, tutoría cancelada, realizada o vencida, duplicado, propia tutoría e inexistente.</td></tr>
+  <tr><td><code>AsignaturaServiceTest</code></td><td>12</td><td>Código único, campos obligatorios, semestres inválidos y reglas de eliminación.</td></tr>
+  <tr><td><code>TutorServiceTest</code></td><td>6</td><td>Al menos una asignatura, estudiante inexistente o sin cuenta, tutor duplicado.</td></tr>
+  <tr><td><code>RegistroServiceTest</code></td><td>3</td><td>Correo duplicado, contraseña débil y registro con rol ESTUDIANTE.</td></tr>
+  <tr><td><code>TutoriaBusquedaServiceTest</code></td><td>2</td><td>Cálculo de cupos y envío de filtros al repositorio.</td></tr>
+  <tr><td><code>AgendaServiceTest</code></td><td>2</td><td>Cada usuario consulta solo su propia agenda.</td></tr>
+  <tr><td colspan="1"><b>Total</b></td><td><b>57</b></td><td><span class="ok">57 aprobadas, 0 fallidas.</span></td></tr>
+</table>
+<pre>[INFO] Tests run: 57, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS</pre>
+
+<h3>8.2 Pruebas de integración (PostgreSQL real)</h3>
+<p><code>TutoriasIntegrationTest</code> se ejecuta contra la base PostgreSQL de Docker. Está etiquetada con <code>@Tag("integration")</code>, así <code>mvn test</code> no depende de la base. Se ejecuta con <code>mvn test -Pintegration</code>. Cada prueba crea sus propios datos y los elimina al terminar.</p>
+<table>
+  <tr><th>Prueba</th><th>Qué verifica</th></tr>
+  <tr><td><code>persisteAsignaturaTutorYTutoriaYLaRecuperaConFiltros</code></td><td>Persistencia y recuperación con filtros de búsqueda.</td></tr>
+  <tr><td><code>noPermitePublicarDosTutoriasEnLaMismaFranja</code></td><td>El índice único parcial rechaza una franja repetida.</td></tr>
+  <tr><td><code>reservaYVerificaCupoEInscripcionEnLaBase</code></td><td>La reserva crea la inscripción y descuenta el cupo en la base.</td></tr>
+  <tr><td><code>rechazaUnaReservaDuplicadaPorRestriccionUnica</code></td><td>La restricción única impide una segunda reserva activa.</td></tr>
+</table>
+<pre>[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS</pre>
+
+<h2 class="salto">9. Evidencia de funcionamiento</h2>
+<p>Las capturas se tomaron sobre la aplicación en ejecución, con PostgreSQL en Docker y los datos del seed. Los archivos originales están en <code>docs/evidencias/</code>.</p>
+<figure class="captura"><img src="../evidencias/03-admin-asignaturas.png"><figcaption>Figura 9. El administrador gestiona el catálogo de asignaturas.</figcaption></figure>
+<figure class="captura"><img src="../evidencias/04-admin-tutores.png"><figcaption>Figura 10. Tutores registrados con sus asignaturas certificadas.</figcaption></figure>
+<figure class="captura"><img src="../evidencias/06-publicar-error-validacion.png"><figcaption>Figura 11. Publicación rechazada: hora anterior a las 07:00 y duración menor a 30 minutos, con errores por campo.</figcaption></figure>
+<figure class="captura"><img src="../evidencias/07-publicar-exito.png"><figcaption>Figura 12. Tutoría publicada correctamente, ya visible en el listado con sus cupos.</figcaption></figure>
+<figure class="captura"><img src="../evidencias/09-listado-filtrado.png"><figcaption>Figura 13. Listado filtrado por asignatura.</figcaption></figure>
+<figure class="captura"><img src="../evidencias/11-reserva-exitosa.png"><figcaption>Figura 14. Reserva confirmada. El cupo baja de 20 a 19.</figcaption></figure>
+<figure class="captura"><img src="../evidencias/12-reserva-error-no-cursa.png"><figcaption>Figura 15. Reserva rechazada porque la estudiante no cursa la asignatura (RN2).</figcaption></figure>
+<figure class="captura"><img src="../evidencias/14-reserva-error-choque-horario.png"><figcaption>Figura 16. Reserva rechazada por choque de horario con otra tutoría reservada (RN2).</figcaption></figure>
+<figure class="captura"><img src="../evidencias/13-agenda-estudiante.png"><figcaption>Figura 17. Agenda del estudiante ordenada por fecha y hora.</figcaption></figure>
+<figure class="captura"><img src="../evidencias/16-tutor-sin-permiso-admin.png"><figcaption>Figura 18. Un tutor que intenta entrar a la administración recibe un 403 controlado.</figcaption></figure>
+
+<h2 class="salto">10. Matriz de trazabilidad</h2>
+<table>
+  <tr><th style="width:12%">Requisito</th><th style="width:15%">Caso de uso / HU</th><th style="width:22%">Clases</th><th style="width:20%">Endpoint</th><th>Pruebas</th></tr>
+  <tr><td>RF3, RNF1, RN3</td><td>Iniciar sesión / HU-01</td><td><code>AuthController</code>, <code>AuthService</code>, <code>AuthMiddleware</code></td><td><code>POST /login</code></td><td>Verificación manual (figuras 9 y 18)</td></tr>
+  <tr><td>RF2, RN3</td><td>Registrarse / HU-02</td><td><code>RegistroController</code>, <code>RegistroService</code></td><td><code>POST /registro</code></td><td><code>RegistroServiceTest</code> (3)</td></tr>
+  <tr><td>RF12</td><td>Gestionar asignaturas</td><td><code>AdminTutoriasController</code>, <code>AsignaturaService</code></td><td><code>/tutorias/admin/asignaturas</code></td><td><code>AsignaturaServiceTest</code> (12)</td></tr>
+  <tr><td>RF1, RN8</td><td>Registrar tutor / HU-08</td><td><code>AdminTutoriasController</code>, <code>TutorService</code></td><td><code>POST /tutorias/admin/tutores</code></td><td><code>TutorServiceTest</code> (6)</td></tr>
+  <tr><td>RF4, RN4, RN5, RN8, RN9</td><td>Publicar / HU-05</td><td><code>TutoriaController</code>, <code>TutoriaService</code>, <code>JpaTransaccion</code></td><td><code>POST /tutorias</code></td><td><code>TutoriaServicePublicarTest</code> (19); integración: franja repetida</td></tr>
+  <tr><td>RF10</td><td>Buscar / HU-03</td><td><code>TutoriaController</code>, <code>TutoriaBusquedaService</code>, <code>TutoriaRepository</code></td><td><code>GET /tutorias</code></td><td><code>TutoriaBusquedaServiceTest</code> (2); integración: filtros</td></tr>
+  <tr><td>RF5, RN1, RN2, RN10</td><td>Reservar / HU-04</td><td><code>TutoriaController</code>, <code>ReservaTutoriaService</code>, <code>JpaTransaccion</code></td><td><code>POST /tutorias/{id}/reservar</code></td><td><code>ReservaTutoriaServiceTest</code> (13); integración: cupo y duplicado</td></tr>
+  <tr><td>RF8</td><td>Consultar agenda</td><td><code>AgendaController</code>, <code>AgendaService</code></td><td><code>GET /tutorias/agenda</code></td><td><code>AgendaServiceTest</code> (2)</td></tr>
+  <tr><td>RF6, RF7, RF9, RF11</td><td>Cancelar, asistencia, historial / HU-06, HU-07</td><td colspan="3">Planificado para el Entregable 3. El esquema ya incluye <code>motivo_cancelacion</code> y <code>asistio</code>.</td></tr>
+</table>
+
+<h2>11. Dificultades, decisiones y trabajo futuro</h2>
+<h3>Dificultades</h3>
+<ul>
+  <li><b>Transacciones.</b> El patrón del proyecto base, un <code>EntityManager</code> por método, no permitía validar e insertar de forma atómica. Lo resolvimos con <code>Transaccion</code>/<code>JpaTransaccion</code> y bloqueos de fila.</li>
+  <li><b>Trabajo en paralelo.</b> Cuatro integrantes trabajaron en ramas distintas sobre las mismas rutas y vistas. Para reducir conflictos al integrar en <code>grupo-8</code>, acordamos antes los nombres de las rutas y los atributos de cada vista.</li>
+  <li><b>Esquema compartido.</b> No podíamos modificar las tablas base sin afectar a otros grupos. Por eso todo el módulo vive en tablas <code>tut_*</code> creadas por scripts aditivos.</li>
+  <li><b>Entorno.</b> En macOS el puerto 7000 lo usa el Receptor AirPlay. Agregamos la variable <code>PORT</code> para elegir otro sin tocar el código.</li>
+</ul>
+<h3>Decisiones</h3>
+<ul>
+  <li>El tutor es un perfil sobre un estudiante y no un rol distinto. Esto cumple RN1 sin duplicar cuentas.</li>
+  <li>Las reglas se validan en el servicio, que entrega mensajes claros, y también en la base de datos con CHECK e índices únicos parciales, que protegen la integridad aunque una validación falle.</li>
+  <li>Las pruebas de integración van en un perfil de Maven aparte, para que <code>mvn test</code> funcione sin base de datos.</li>
+</ul>
+<h3>Trabajo futuro (Entregable 3)</h3>
+<ul>
+  <li>Implementar registrar asistencia, cancelar tutoría, cancelar inscripción e historial.</li>
+  <li>Agregar un manejador global de excepciones en Javalin para errores no previstos (500 genérico y registro en logs). Hoy cada controlador maneja sus propios errores de negocio.</li>
+  <li>Guardar las contraseñas con un hash seguro. El login del proyecto base todavía las compara en texto plano.</li>
+  <li>Justificar SOLID formalmente y ampliar las pruebas de integración a cinco.</li>
+</ul>
+
+<h2>12. Conclusiones</h2>
+<p>El módulo ya permite recorrer el flujo principal completo. El administrador crea asignaturas y habilita tutores, el tutor publica, el estudiante busca y reserva, y ambos ven la tutoría en su agenda. Las reglas de negocio que corresponden a estas funcionalidades (RN1 a RN5 y RN8 a RN10) están implementadas, cubiertas por 57 pruebas unitarias y 4 de integración y reforzadas en la base de datos.</p>
+<p>Corregir el Entregable 1 a la par de la implementación nos obligó a precisar requisitos que estaban ambiguos, como el registro, el cupo y la cancelación. Mantener la trazabilidad desde el inicio hizo más simple verificar que cada requisito tuviera código y pruebas asociadas. Para el Entregable 3 quedan las funcionalidades de cancelación, asistencia e historial, además del manejo global de errores y el cifrado de contraseñas.</p>
+
+<h2 class="salto">Anexo A. Cómo ejecutar el módulo</h2>
+<pre>docker compose up -d                       # PostgreSQL con los scripts de db/init
+mvn clean compile
+mvn exec:java -Dexec.mainClass="cl.ucn.app.main.Main"            # http://localhost:7000
+PORT=7070 mvn exec:java -Dexec.mainClass="cl.ucn.app.main.Main"  # si el puerto 7000 está ocupado
+mvn test                                   # pruebas unitarias
+mvn test -Pintegration                     # pruebas de integración (requiere Docker)</pre>
+<p>Si la base ya existía antes de agregar los scripts del módulo, hay que recrear el volumen (<code>docker compose down -v</code>) para que PostgreSQL los ejecute.</p>
+<table>
+  <tr><th>Usuario de prueba</th><th>Perfil</th></tr>
+  <tr><td><code>admin@sigu.cl</code></td><td>Administrador</td></tr>
+  <tr><td><code>ana.rojas@alumnos.ucn.cl</code>, <code>tomas.pizarro@alumnos.ucn.cl</code></td><td>Estudiante con perfil de tutor</td></tr>
+  <tr><td><code>bruno.castro@alumnos.ucn.cl</code>, <code>carla.munoz@alumnos.ucn.cl</code></td><td>Estudiante</td></tr>
+</table>
+<p>Las contraseñas de prueba están en <code>db/init/02_seed.sql</code> y <code>db/init/81_tutorias_seed.sql</code>.</p>
+
+</body>
+</html>

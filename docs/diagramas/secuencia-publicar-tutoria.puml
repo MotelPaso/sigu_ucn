@@ -1,0 +1,48 @@
+@startuml secuencia-publicar-tutoria
+title Secuencia: Publicar tutoría (HU-05, RF4)
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+autonumber
+
+actor Tutor
+participant "Navegador" as UI
+participant "AuthMiddleware" as MW
+participant "TutoriaController" as C
+participant "TutoriaService" as S
+participant "JpaTransaccion" as TX
+participant "TutorRepository" as TR
+participant "TutoriaRepository" as R
+database "PostgreSQL" as DB
+
+Tutor -> UI : completa el formulario y presiona "Publicar"
+UI -> MW : POST /tutorias
+MW -> MW : requireLogin(ctx)
+MW -> C : publicar(ctx)
+C -> S : publicar(usuarioId, TutoriaForm)
+S -> S : validarFormulario(form)\n07:00-22:00, >= 30 min,\n>= 3 h de anticipación, cupo > 0,\nsala si es presencial
+alt datos inválidos
+  S --> C : TutoriaValidacionException(errores por campo)
+  C --> UI : 400 + publicar.jte con errores marcados
+else datos válidos
+  S -> TX : ejecutar(em -> ...)
+  TX -> DB : BEGIN
+  TX -> TR : findByUsuarioId(em, usuarioId)
+  TR -> DB : SELECT tutor + asignaturas certificadas
+  TX -> TR : bloquear(em, tutor)
+  TR -> DB : SELECT ... FOR UPDATE
+  TX -> TX : verifica asignatura certificada (RN8)
+  TX -> R : existeConflictoTutor(em, tutorId, inicio, fin)
+  R -> DB : SELECT count(*) franjas cruzadas
+  alt asignatura no certificada o franja ocupada
+    TX -> DB : ROLLBACK
+    S --> C : TutoriaValidacionException
+    C --> UI : 400 + formulario con el error
+  else sin conflictos
+    TX -> R : save(em, tutoria)
+    R -> DB : INSERT tut_tutorias (estado PUBLICADA)
+    TX -> DB : COMMIT
+    S --> C : Tutoria
+    C --> UI : 302 /tutorias + "Tutoría publicada"
+  end
+end
+@enduml

@@ -1,0 +1,50 @@
+@startuml secuencia-reservar-tutoria
+title Secuencia: Reservar tutoría (HU-04, RF5)
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+autonumber
+
+actor Estudiante
+participant "Navegador" as UI
+participant "AuthMiddleware" as MW
+participant "TutoriaController" as C
+participant "ReservaTutoriaService" as S
+participant "JpaTransaccion" as TX
+participant "EstudianteRepository" as ER
+participant "TutoriaRepository" as TR
+participant "InscripcionTutoriaRepository" as IR
+database "PostgreSQL" as DB
+
+Estudiante -> UI : presiona "Reservar tutoría"
+UI -> MW : POST /tutorias/{id}/reservar
+MW -> MW : requireLogin(ctx)
+MW -> C : reservar(ctx)
+C -> S : reservar(usuarioId, tutoriaId)
+S -> TX : ejecutar(em -> ...)
+TX -> DB : BEGIN
+TX -> ER : findByUsuarioId(em, usuarioId)
+TX -> TR : findByIdForUpdate(em, tutoriaId)
+TR -> DB : SELECT ... FOR UPDATE (bloquea la tutoría)
+TX -> TX : validarVigente(tutoria)\nPUBLICADA y futura
+TX -> IR : existsByTutoriaIdAndEstudianteIdAndEstado(RESERVADA)
+TX -> ER : cursaAsignatura(em, estudianteId, asignaturaId)
+TX -> IR : contarActivasPorTutoria(em, tutoriaId)
+TX -> TR : existeConflictoEstudiante(em, estudianteId, inicio, fin)
+alt alguna regla falla
+  TX -> DB : ROLLBACK
+  S --> C : TutoriaValidacionException(mensaje)
+  C --> UI : 302 /tutorias/{id} + mensaje de error
+else todas las reglas se cumplen
+  TX -> IR : save(em, inscripcion)
+  IR -> DB : INSERT tut_inscripciones (RESERVADA)
+  TX -> DB : COMMIT
+  S --> C : InscripcionTutoria
+  C --> UI : 302 /tutorias/{id} + "Reserva confirmada"
+end
+note over DB
+  El índice único parcial ux_tut_inscripciones_activa
+  impide dos reservas activas del mismo estudiante;
+  si se dispara, el servicio lo traduce a
+  "Ya estás inscrito en esta tutoría."
+end note
+@enduml

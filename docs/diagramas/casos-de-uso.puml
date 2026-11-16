@@ -1,0 +1,39 @@
+@startuml casos-de-uso
+!pragma layout smetana
+title Casos de uso del módulo de tutorías (versión corregida)
+skinparam shadowing false
+left to right direction
+
+actor Estudiante
+actor Tutor
+actor Administrador
+Tutor -|> Estudiante
+
+rectangle "Módulo de tutorías" {
+  usecase "Iniciar sesión" as UC1
+  usecase "Registrarse como estudiante" as UC2
+  usecase "Buscar y filtrar tutorías" as UC3
+  usecase "Reservar tutoría" as UC4
+  usecase "Consultar agenda" as UC5
+  usecase "Cancelar inscripción" as UC6
+  usecase "Publicar tutoría" as UC7
+  usecase "Cancelar tutoría" as UC8
+  usecase "Registrar asistencia" as UC9
+  usecase "Gestionar asignaturas" as UC10
+  usecase "Registrar tutor" as UC11
+}
+
+Estudiante --> UC1
+Estudiante --> UC2
+Estudiante --> UC3
+Estudiante --> UC4
+Estudiante --> UC5
+Estudiante --> UC6
+Tutor --> UC7
+Tutor --> UC8
+Tutor --> UC9
+Administrador --> UC1
+Administrador --> UC10
+Administrador --> UC11
+UC4 ..> UC3 : <<include>>
+@enduml

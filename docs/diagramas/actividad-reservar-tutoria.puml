@@ -1,0 +1,50 @@
+@startuml actividad-reservar-tutoria
+!pragma layout smetana
+title Actividad: Reservar tutoría
+skinparam shadowing false
+|Estudiante|
+start
+:Ingresar a "Tutorías disponibles";
+|Sistema|
+:Listar tutorías publicadas y futuras;
+|Estudiante|
+:Filtrar por tutor, asignatura o fecha (opcional);
+:Seleccionar una tutoría;
+|Sistema|
+:Mostrar detalle (tutor, fecha, horario,\nmodalidad, cupos y estado);
+|Estudiante|
+:Presionar "Reservar tutoría";
+|Sistema|
+:Abrir transacción y bloquear la tutoría;
+if (¿Tutoría PUBLICADA y futura?) then (no)
+  :Rechazar: cancelada, realizada o vencida;
+  stop
+else (sí)
+endif
+if (¿Es su propia tutoría\no ya está inscrito?) then (sí)
+  :Rechazar reserva;
+  stop
+else (no)
+endif
+if (¿Cursa la asignatura? (RN2)) then (no)
+  :Rechazar: "No cursas la asignatura";
+  stop
+else (sí)
+endif
+if (¿Quedan cupos?) then (no)
+  :Rechazar: "sin cupos disponibles";
+  stop
+else (sí)
+endif
+if (¿Choque con otra tutoría\nreservada? (RN2)) then (sí)
+  :Rechazar: "se cruza con ese horario";
+  stop
+else (no)
+endif
+:Crear inscripción RESERVADA;
+:Confirmar transacción;
+:Mostrar "Reserva confirmada";
+|Estudiante|
+:Ver la tutoría en "Mi agenda";
+stop
+@enduml

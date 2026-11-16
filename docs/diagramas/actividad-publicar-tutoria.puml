@@ -1,0 +1,46 @@
+@startuml actividad-publicar-tutoria
+!pragma layout smetana
+title Actividad: Publicar tutoría
+skinparam shadowing false
+|Tutor|
+start
+:Ingresar a "Publicar tutoría";
+|Sistema|
+if (¿Usuario tiene perfil de tutor?) then (no)
+  :Mostrar "Solo los tutores habilitados\npueden acceder" (403);
+  stop
+else (sí)
+  :Mostrar formulario con\nasignaturas certificadas;
+endif
+|Tutor|
+:Elegir asignatura, fecha, horario,\nmodalidad, sala y cupo;
+:Presionar "Publicar";
+|Sistema|
+:Validar campos obligatorios;
+if (¿Horario entre 07:00 y 22:00,\nduración >= 30 min y\n>= 3 h de anticipación?) then (no)
+  :Volver al formulario con\nlos campos marcados;
+  stop
+else (sí)
+endif
+|Sistema|
+if (¿Presencial sin sala\no cupo <= 0?) then (sí)
+  :Volver al formulario con\nlos campos marcados;
+  stop
+else (no)
+endif
+:Abrir transacción y bloquear\nel perfil del tutor;
+if (¿Asignatura certificada?) then (no)
+  :Rechazar (RN8);
+  stop
+else (sí)
+endif
+if (¿Franja libre para el tutor?) then (no)
+  :Rechazar: "se cruza con otra tutoría";
+  stop
+else (sí)
+endif
+:Guardar tutoría con estado PUBLICADA;
+:Confirmar transacción;
+:Mostrar listado con\n"Tutoría publicada";
+stop
+@enduml

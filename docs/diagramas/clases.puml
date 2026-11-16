@@ -1,0 +1,75 @@
+@startuml clases
+!pragma layout smetana
+title Diagrama de clases del dominio (versión corregida)
+skinparam shadowing false
+hide empty methods
+
+class Usuario {
+  id : Long
+  nombre : String
+  correo : String
+  activo : boolean
+}
+class Rol {
+  nombre : String
+}
+class Estudiante {
+  id : Long
+  correo : String
+  nombre : String
+  carrera : String
+  semestre : int
+}
+class Tutor {
+  id : Long
+  certificado : Boolean
+}
+class Asignatura {
+  id : Long
+  codigo : String
+  nombre : String
+  carrera : String
+  semestre : int
+}
+class Tutoria {
+  id : Long
+  inicio : LocalDateTime
+  fin : LocalDateTime
+  sala : String
+  capacidad : Integer
+  motivoCancelacion : String
+  getDuracionMinutos() : long
+}
+class InscripcionTutoria {
+  id : Long
+  fechaInscripcion : LocalDateTime
+  motivoCancelacion : String
+  asistio : Boolean
+}
+enum ModalidadTutoria {
+  ONLINE
+  PRESENCIAL
+}
+enum EstadoTutoria {
+  PUBLICADA
+  CANCELADA
+  REALIZADA
+}
+enum EstadoInscripcion {
+  RESERVADA
+  CANCELADA
+}
+
+Usuario "*" --> "1" Rol
+Estudiante "0..1" --> "0..1" Usuario : cuenta
+Estudiante "*" -- "*" Asignatura : cursa
+Tutor "0..1" --> "1" Estudiante
+Tutor "*" -- "1..*" Asignatura : certificadas
+Tutoria "*" --> "1" Tutor
+Tutoria "*" --> "1" Asignatura
+Tutoria --> ModalidadTutoria
+Tutoria --> EstadoTutoria
+InscripcionTutoria "*" --> "1" Tutoria
+InscripcionTutoria "*" --> "1" Estudiante
+InscripcionTutoria --> EstadoInscripcion
+@enduml

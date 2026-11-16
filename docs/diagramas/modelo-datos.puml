@@ -1,0 +1,79 @@
+@startuml modelo-datos
+!pragma layout smetana
+title Modelo de datos del módulo de tutorías (PostgreSQL)
+skinparam shadowing false
+skinparam linetype ortho
+hide circle
+
+entity "usuarios (base)" as usuarios {
+  * id : BIGSERIAL <<PK>>
+  --
+  nombre, correo <<UQ>>, password, activo
+  rol_id <<FK roles>>
+}
+entity tut_estudiantes {
+  * id : BIGSERIAL <<PK>>
+  --
+  * correo : VARCHAR(120) <<UQ>>
+  * nombre : VARCHAR(100)
+  * carrera : VARCHAR(120)
+  * semestre : INTEGER (1..12)
+  usuario_id : BIGINT <<FK, UQ>>
+}
+entity tut_asignaturas {
+  * id : BIGSERIAL <<PK>>
+  --
+  * codigo : VARCHAR(20) <<UQ>>
+  * nombre : VARCHAR(120)
+  * carrera : VARCHAR(120)
+  * semestre : INTEGER (1..12)
+}
+entity tut_estudiante_asignaturas {
+  * estudiante_id <<PK, FK>>
+  * asignatura_id <<PK, FK>>
+}
+entity tut_tutores {
+  * id : BIGSERIAL <<PK>>
+  --
+  * estudiante_id : BIGINT <<FK, UQ>>
+  * certificado : BOOLEAN
+}
+entity tut_tutor_asignaturas {
+  * tutor_id <<PK, FK>>
+  * asignatura_id <<PK, FK>>
+}
+entity tut_tutorias {
+  * id : BIGSERIAL <<PK>>
+  --
+  * tutor_id <<FK>>
+  * asignatura_id <<FK>>
+  * inicio : TIMESTAMP
+  * fin : TIMESTAMP
+  * modalidad : ONLINE | PRESENCIAL
+  sala : VARCHAR(50)
+  * capacidad : INTEGER (> 0)
+  * estado : PUBLICADA | CANCELADA | REALIZADA
+  motivo_cancelacion : VARCHAR(255)
+}
+entity tut_inscripciones {
+  * id : BIGSERIAL <<PK>>
+  --
+  * tutoria_id <<FK>>
+  * estudiante_id <<FK>>
+  * estado : RESERVADA | CANCELADA
+  * fecha_inscripcion : TIMESTAMP
+  motivo_cancelacion : VARCHAR(255)
+  asistio : BOOLEAN
+}
+
+usuarios ||--o| tut_estudiantes
+tut_estudiantes ||--o{ tut_estudiante_asignaturas
+tut_asignaturas ||--o{ tut_estudiante_asignaturas
+tut_estudiantes ||--o| tut_tutores
+tut_tutores ||--o{ tut_tutor_asignaturas
+tut_asignaturas ||--o{ tut_tutor_asignaturas
+tut_tutores ||--o{ tut_tutorias
+tut_asignaturas ||--o{ tut_tutorias
+tut_tutorias ||--o{ tut_inscripciones
+tut_estudiantes ||--o{ tut_inscripciones
+@enduml

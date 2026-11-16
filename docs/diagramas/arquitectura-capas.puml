@@ -1,0 +1,38 @@
+@startuml arquitectura-capas
+!pragma layout smetana
+title Arquitectura por capas del módulo de tutorías
+skinparam shadowing false
+skinparam componentStyle rectangle
+
+actor Usuario
+package "Presentación" {
+  [Vistas JTE\nlistado, detalle, publicar,\nagenda, registro, admin/*] as V
+  [Rutas\nAuthRoutes, TutoriaRoutes,\nTutoriaAdminRoutes] as RT
+  [AuthMiddleware\nSessionUtil] as MW
+  [Controladores\nAuthController, RegistroController,\nTutoriaController, AgendaController,\nAdminTutoriasController] as C
+}
+package "Servicio (reglas de negocio)" {
+  [TutoriaService\nReservaTutoriaService\nTutoriaBusquedaService\nAgendaService\nAsignaturaService, TutorService\nRegistroService, AuthService] as S
+  [TutoriaValidacionException] as EX
+}
+package "Persistencia" {
+  [Interfaces de repositorio\nTutoriaRepository, TutorRepository,\nInscripcionTutoriaRepository, ...] as RI
+  [Implementaciones JPA\nTutoriaRepositoryImpl, TutorRepositoryImpl, ...] as RJ
+  [Transaccion / JpaTransaccion\nJPAUtil] as TX
+  [Entidades JPA\nTutoria, Tutor, Estudiante,\nAsignatura, InscripcionTutoria] as M
+}
+database "PostgreSQL\n(Docker)" as DB
+
+Usuario --> RT : HTTP
+RT --> MW
+RT --> C
+C --> S
+C --> V : render
+S --> RI
+S --> TX
+S ..> EX
+RI <|.. RJ
+RJ --> M
+RJ --> TX
+TX --> DB : Hibernate
+@enduml
